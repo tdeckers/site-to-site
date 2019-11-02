@@ -4,3 +4,6 @@ bin
 __debug_bin
 debug.test
 *.code-workspace
+
+# don't commit private details.
+private.sh
