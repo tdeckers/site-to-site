@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  HomeIP:
+    Description: IP address of home network
+    Type: String
+    Default: 94.226.70.22
+  VPCID:
+    Description: ID of the VPC to connect to
+    Type: String
+    Default: vpc-073abb9e385e9af10
+  RouteTableID:
+    Description: RouteTable id
+    Type: String
+    Default: rtb-033ba0c6f94f55f16
+  TagName:
+    Description: Application tag applied to resources that support tags
+    Type: String
+    Default: site-to-site
+  Prefix:
+    Description: Prefix for resource names.
+    Type: String
+    Default: s2s
+Resources:
+  cgw0b574d54e07b6445d:
+    Type: 'AWS::EC2::CustomerGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Join [ "-", [ !Ref Prefix, "home" ] ]
+        - Key: Application
+          Value: !Ref TagName
+      Type: ipsec.1
+      IpAddress: !Ref HomeIP
+      BgpAsn: '65011'
+  vgw06449bfe826faa19e:
+    Type: 'AWS::EC2::VPNGateway'
+    Properties:
+      Type: ipsec.1
+      Tags:
+        - Key: Name
+          Value: !Join [ "-", [ !Ref Prefix, "vgw" ] ]
+        - Key: Application
+          Value: !Ref TagName
+  vpn015dc575b443847ff:
+    Type: 'AWS::EC2::VPNConnection'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Join [ "-", [ !Ref Prefix, "vpn" ] ]
+        - Key: Application
+          Value: !Ref TagName
+      Type: ipsec.1
+      StaticRoutesOnly: 'true'
+      VpnGatewayId: !Ref vgw06449bfe826faa19e
+      CustomerGatewayId: !Ref cgw0b574d54e07b6445d
+  gw1:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPCID
+      VpnGatewayId: !Ref vgw06449bfe826faa19e
+  croute1:
+    Type: 'AWS::EC2::VPNConnectionRoute'
+    Properties:
+      VpnConnectionId: !Ref vpn015dc575b443847ff
+      DestinationCidrBlock: 192.168.2.0/24
+  route1:
+    Type: AWS::EC2::VPNGatewayRoutePropagation
+    DependsOn: 
+    - vgw06449bfe826faa19e
+    - gw1
+    Properties:
+       RouteTableIds: 
+        - !Ref RouteTableID
+       VpnGatewayId: !Ref vgw06449bfe826faa19e
+Description: site-to-site
