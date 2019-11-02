@@ -2,6 +2,7 @@
 
 # This file sources private.sh, which must not be commited to git since 
 # it contains user specific details.
+source ./private.sh
 
 export TF_VAR_vpc_id="$VPC_ID"
 export TF_VAR_route_table_id="$ROUTE_TABLE_ID"
