@@ -116,10 +116,10 @@ func handler(event CfnEvent) error {
 			peers, err := GetPeers()
 			if err != nil {
 				logf("Failed to get peers: %v", err)
-				return err
+				return nil // don't send error, no need to retry.
 			}
 			peerName := fmt.Sprintf("%s-cloud-vpn", os.Getenv("PREFIX"))
-			newPeers := make([]Peer, len(peers))
+			newPeers := []Peer{}
 			for _, peer := range peers {
 				if peer.Name != peerName {
 					newPeers = append(newPeers, peer)
@@ -128,7 +128,7 @@ func handler(event CfnEvent) error {
 			err = UpdatePeers(newPeers)
 			if err != nil {
 				logf("Failed to update peers: %v", err)
-				return err
+				return nil // don't send error, no need to retry.
 			}
 		}
 		// TODO: handle CREATE_FAILED, DELETE_FAILED
