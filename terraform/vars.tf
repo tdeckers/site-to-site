@@ -25,7 +25,7 @@ variable "home_ip" {
 # SNS topic for sending progress notification to an admin/operator
 # If empty, then no notifications will be sent.
 variable "notification_topic" {
-    default = "arn:aws:sns:eu-west-1:014341863605:notify-me"
+    default = ""
 }
 
 # Meraki org id for use in API

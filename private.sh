@@ -11,3 +11,5 @@ export HOME_IP=
 # Optional.  Set if you want Meraki MX to be auto-updated.
 export MERAKI_ORG_ID=
 export MERAKI_APIKEY=
+# Optional. Set if you want notifications through SNS. (Set ARN here.)
+export NOTIFICATION_TOPIC=

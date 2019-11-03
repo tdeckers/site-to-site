@@ -198,3 +198,22 @@ resource "aws_lambda_permission" "s2s-sns-lambda" {
   principal     = "sns.amazonaws.com"
   source_arn    = "${aws_sns_topic.s2s-event-topic.arn}"
 }
+
+# Monitor tunnel uptime, notify when up for 6*600 secs (1 hour)
+# Any value above 0 means something is up.. hence threshold = 0.2
+resource "aws_cloudwatch_metric_alarm" "s2s-vpn-state" {
+  alarm_name                = "s2s-vpn-tunnel-state"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = "6"
+  metric_name               = "TunnelState"
+  namespace                 = "AWS/VPN"
+  period                    = "600"
+  statistic                 = "Maximum"
+  threshold                 = "0.2"
+  alarm_description         = "This metric monitors VPN tunnel state (up/down)"
+  insufficient_data_actions = []
+  alarm_actions             = [length(var.notification_topic) > 0 ? var.notification_topic : ""]
+  tags = {
+    Application = "${var.tag_name}"
+  }
+}
