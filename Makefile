@@ -3,7 +3,7 @@ help:
 
 functions := $(shell find functions -name \*main.go | awk -F'/' '{print $$2}')
 
-check_pre:
+
 
 build: ## Build golang binaries
 	@for function in $(functions) ; do \
@@ -12,10 +12,15 @@ build: ## Build golang binaries
 		zip -j bin/$$function.zip bin/$$function; \
 	done
 
-deploy: ## Update functions
+init: ## Initialize Terraform
+	@cd terraform; terraform init;
+
+deploy: ## Deploy infrastructure using Terraform
 	@cd terraform; terraform apply;
 
-test:
+test: ## Run lambda function unit testing
 	@for function in $(functions) ; do \
 		go test -v ./functions/$$function/; \
 	done
+
+.PHONY: test deploy init build help
