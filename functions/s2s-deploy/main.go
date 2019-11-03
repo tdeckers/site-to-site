@@ -61,7 +61,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	case "POST":
 		logf("POST body: %s", request.Body)
-		switch request.Body {
+		switch strings.ToUpper(request.Body) {
 		case "ON":
 			id, err := createStack(templateURL, stackName)
 			if err != nil {

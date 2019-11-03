@@ -112,6 +112,24 @@ func handler(event CfnEvent) error {
 		if msg.ResourceStatus == "DELETE_COMPLETE" {
 			logf("Stack deleted!")
 			notify("Stack deleted!")
+			// Remove VPN peer from Meraki
+			peers, err := GetPeers()
+			if err != nil {
+				logf("Failed to get peers: %v", err)
+				return err
+			}
+			peerName := fmt.Sprintf("%s-cloud-vpn", os.Getenv("PREFIX"))
+			newPeers := make([]Peer, len(peers))
+			for _, peer := range peers {
+				if peer.Name != peerName {
+					newPeers = append(newPeers, peer)
+				}
+			}
+			err = UpdatePeers(newPeers)
+			if err != nil {
+				logf("Failed to update peers: %v", err)
+				return err
+			}
 		}
 		// TODO: handle CREATE_FAILED, DELETE_FAILED
 	}
