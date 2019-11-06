@@ -14,10 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/cloudformation"
 )
 
-const (
-	templateURL = "https://site-to-site.s3-eu-west-1.amazonaws.com/site-to-site.yaml"
-)
-
 var sess = session.Must(session.NewSessionWithOptions(session.Options{
 	SharedConfigState: session.SharedConfigEnable,
 }))
@@ -63,6 +59,8 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		logf("POST body: %s", request.Body)
 		switch strings.ToUpper(request.Body) {
 		case "ON":
+			bucketName := os.Getenv("BUCKET_NAME")
+			templateURL := fmt.Sprintf("https://%s.s3-eu-west-1.amazonaws.com/site-to-site.yaml", bucketName)
 			id, err := createStack(templateURL, stackName)
 			if err != nil {
 				if strings.Contains(err.Error(), "already exists") {
@@ -113,6 +111,9 @@ func validateEnv() error {
 	}
 	if os.Getenv("HOME_IP") == "" {
 		missing = append(missing, "HOME_IP")
+	}
+	if os.Getenv("BUCKET_NAME") == "" {
+		missing = append(missing, "BUCKET_NAME")
 	}
 	if len(missing) != 0 {
 		msg := strings.Join(missing, ", ")

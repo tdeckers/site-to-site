@@ -34,6 +34,7 @@ Before using terraform:
 
 3. Deploy infrastructure to AWS
 
+    `source ./env.sh`
     `make deploy`
 
 ## Usage
