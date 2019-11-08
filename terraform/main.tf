@@ -1,6 +1,6 @@
 # Upload the CloudFormation template
 resource "aws_s3_bucket_object" "s2s-vpn-template" {
-  bucket = "site-to-site"
+  bucket = "${var.bucket_name}"
   key    = "site-to-site.yaml"
   source = "../cloudformation/site-to-site.yaml"
   acl    = "public-read"
@@ -103,6 +103,7 @@ resource "aws_lambda_function" "s2s-deploy" {
       VPC_ID = "${var.vpc_id}"
       ROUTE_TABLE_ID = "${var.route_table_id}"
       HOME_IP = "${var.home_ip}"
+      BUCKET_NAME = "${var.bucket_name}"
       SNS_TOPIC = "${aws_sns_topic.s2s-event-topic.arn}"
     }
   }

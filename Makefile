@@ -4,11 +4,13 @@ help:
 functions := $(shell find functions -name \*main.go | awk -F'/' '{print $$2}')
 
 
-
 build: ## Build golang binaries
 	@for function in $(functions) ; do \
 		echo "Building $$function"; \
-		env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/$$function functions/$$function/*.go ; \
+		cd functions/$$function; \
+	    go get -u -t; \
+		env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../../bin/$$function .; \
+		cd ../..; \
 		zip -j bin/$$function.zip bin/$$function; \
 	done
 
@@ -20,7 +22,8 @@ deploy: ## Deploy infrastructure using Terraform
 
 test: ## Run lambda function unit testing
 	@for function in $(functions) ; do \
-		go test -v ./functions/$$function/; \
+		cd functions/$$function; \
+		go test -v ./...; \
 	done
 
 .PHONY: test deploy init build help

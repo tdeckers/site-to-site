@@ -22,6 +22,11 @@ variable "home_ip" {
 
 }
 
+# S3 bucket for terraform state and cloud formation template
+variable "bucket_name" {
+    
+}
+
 # SNS topic for sending progress notification to an admin/operator
 # If empty, then no notifications will be sent.
 variable "notification_topic" {

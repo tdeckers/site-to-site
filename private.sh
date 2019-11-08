@@ -7,6 +7,7 @@
 export VPC_ID=
 export ROUTE_TABLE_ID=
 export HOME_IP=
+export BUCKET_NAME=
 
 # Optional.  Set if you want Meraki MX to be auto-updated.
 export MERAKI_ORG_ID=

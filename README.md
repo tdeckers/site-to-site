@@ -12,30 +12,45 @@ This repo assumes Meraki MX to be the home side of the VPN Connection.  Other VP
 
 * AWS account and CLI configured
 * Terraform installed
-* (optional) S3 bucket.  Local state can be used as well
+* S3 bucket.  Used for remote state and cloud formation template.  For my setup requires public access of the S3 bucket.  You can change that.
 * (optional) Meraki account and MX for home side of the VPN tunnel.  You can use alternative VPN solutions, but this repo doesn't provide instruction.
 
 Before using terraform:
+
 * Ensure AWS credentials are set.  Run `aws configure` if needed.
 * Update `private.sh` with AWS and Meraki details
 * verify and update `provider.tf` as needed.
 * update `backend.tf` with your S3 bucket. If you want to use local state, you can remove the file.
 
-
 ## Deploy
 
 1. Build lambda functions
 
-    `make build`
+```shell
+    make build
+```
 
 2. (only needed once) Initialize terraform
 
-    `make init`
+```shell
+    make init
+```
 
 3. Deploy infrastructure to AWS
 
-    `make deploy`
+```shell
+    source ./env.sh
+    make deploy
+```
 
 ## Usage
 
-TODO
+The deployment will create a number of resources in your AWS account.  Most importantly, it'll create an API Gateway endpoint that you can trigger to create and delete the VPN connection.
+
+Navigate to the API Gateway Console.  Under APIs, find *Site-to-site API*.  Click on *ANY* and then on *Test*.  This will open a page to trigger API calls.
+
+To verify if a VPN connection is already create, select *Method* GET and click on *Test* at the bottom of the page.
+
+To create a VPN connection, select *Method* POST and add `on` as the *Request Body*.  After about 10 minutes the VPN connection is created and optionally Meraki MX is configured.
+
+To tear down the VPN connection, select *Method* POST and add `off` as the *Request Body*.
