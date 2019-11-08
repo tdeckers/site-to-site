@@ -75,10 +75,9 @@ func handler(event CfnEvent) error {
 			notify("Creating stack...")
 		}
 		// TODO: also handle "UPDATE_COMPLETE"
-		if msg.ResourceStatus == "CREATE_COMPLETE" {
-			// TODO: also handle "UPDATE_COMPLETE"
-			logf("Stack created!")
-			notify("Stack created, configuring Meraki.")
+		if msg.ResourceStatus == "CREATE_COMPLETE" || msg.ResourceStatus == "UPDATE_COMPLETE" {			
+			logf("Stack ready!")
+			notify("Stack ready, configuring Meraki.")
 			// Get CIDR block from VPC
 			vpcid := os.Getenv("VPC_ID")
 			cidr, err := GetVpcCidr(vpcid)
