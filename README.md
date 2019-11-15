@@ -9,6 +9,8 @@ The VPN Connection attaches to a specific VPC and route table in AWS.  Any resou
 
 This repo assumes Meraki MX to be the home side of the VPN Connection.  Other VPN solutions might be possible, but instructions are not included here.
 
+For a detailed overview of the purpose and use of this solution, check out [this post](https://medium.com/@ducbase/automate-your-home-network-extension-into-the-cloud-dbc6ed38bd4b).
+
 ## Prerequisites
 
 * AWS account and CLI configured
